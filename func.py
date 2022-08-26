@@ -2,42 +2,50 @@ import random
 from dotenv import load_dotenv
 import datetime
 import sqlite3
+from contextlib import contextmanager
+
 load_dotenv()
 now = datetime.datetime.now()
 
 
+@contextmanager
+def db_conn(name_db):
+    conn = sqlite3.connect(name_db)
+    cur = conn.cursor()
+    yield cur
+    conn.commit()
+    conn.close()
+
+
 def create_list_of_var():
-    VARIANTS = sqlite3.connect('var.db')  # Соединение с базой данных для дальнейшего обращения к ней в функциях
-    cur = VARIANTS.cursor()  # Текущее положение курсора в базе данных
-    cur.execute('''CREATE TABLE IF NOT EXISTS color(
-            color_id INTEGER PRIMARY KEY autoincrement ,
-            color_name text NOT NULL,
-            color_code text NOT NULL,
-            color_rgb text NOT NULL );
-            ''')
-    cur.execute('''CREATE TABLE IF NOT EXISTS design(
-            design_id INTEGER PRIMARY KEY autoincrement ,
-            design_name text NOT NULL);
-            ''')
-    cur.execute('''CREATE TABLE IF NOT EXISTS shape(
-            shape_id INTEGER PRIMARY KEY autoincrement ,
-            shape_name text);
-            ''')
-    cur.execute('''CREATE TABLE IF NOT EXISTS mat(
-            mat_id INTEGER PRIMARY KEY autoincrement ,
-            mat_name text);
-            ''')
-    VARIANTS.commit()
-    VARIANTS.close()
-    '''создание структуры базы данных  '''
+    with db_conn('var.db') as cur:
+        cur.execute('''CREATE TABLE IF NOT EXISTS color(
+                color_id INTEGER PRIMARY KEY autoincrement ,
+                color_name text NOT NULL,
+                color_code text NOT NULL,
+                color_rgb text NOT NULL );
+                ''')
+        cur.execute('''CREATE TABLE IF NOT EXISTS design(
+                design_id INTEGER PRIMARY KEY autoincrement ,
+                design_name text NOT NULL);
+                ''')
+        cur.execute('''CREATE TABLE IF NOT EXISTS shape(
+                shape_id INTEGER PRIMARY KEY autoincrement ,
+                shape_name text);
+                ''')
+        cur.execute('''CREATE TABLE IF NOT EXISTS mat(
+                mat_id INTEGER PRIMARY KEY autoincrement ,
+                mat_name text);
+                ''')
+        '''создание структуры базы данных  '''
 
 
-def save_user_data(file_direction='variants/users.txt', command='massage.from_user'):
+def save_user_data(file_direction='users.txt', command='massage.from_user'):
     with open(file_direction, 'a', encoding='utf-8') as userdata:
         t = command
         userdata.write(f'{str(t)}')
         userdata.write(now.strftime("%d-%m-%Y %H:%M"))
-        userdata.write('''
+        userdata.write('''/n
         ''')
     '''Сохранение данных пользователей для дальнейшей работы с клиентами '''
 
@@ -64,51 +72,46 @@ def get_random(command='bot'):
 
 
 def get_random_v2(table, title='name'):
-    VARIANTS = sqlite3.connect('var.db')  # Соединение с базой данных для дальнейшего обращения к ней в функциях
+    with db_conn('var.db') as cur:
 
-    cur = VARIANTS.cursor()  # Текущее положение курсора в базе данных
+        if table == 'color':
+            sqlite_select_query = '''
+            SELECT color_name,color_code,color_rgb
+            from color
+            order by random()
+            limit 1;
+            '''
+            cur.execute(sqlite_select_query)
+            records = cur.fetchall()
+            if title == 'name':
+                print()
+                return records[0][0]
+            if title == 'code':
+                return records[0][1]
+            if title == 'rgb':
+                return records[0][2]
+        elif table == 'design':
+            sqlite_select_query = '''SELECT design_name FROM design
+            order by random()
+            limit 1;'''
+            cur.execute(sqlite_select_query)
+            records = cur.fetchall()
 
-    if table == 'color':
-        sqlite_select_query = '''
-        SELECT color_name,color_code,color_rgb
-        from color
-        order by random()
-        limit 1;
-        '''
-        cur.execute(sqlite_select_query)
-        records = cur.fetchall()
-        if title == 'name':
-            print()
             return records[0][0]
-        if title == 'code':
-            return records[0][1]
-        if title == 'rgb':
-            return records[0][2]
-    elif table == 'design':
-        sqlite_select_query = '''SELECT design_name FROM design
-        order by random()
-        limit 1;'''
-        cur.execute(sqlite_select_query)
-        records = cur.fetchall()
+        elif table == 'mat':
+            sqlite_select_query = '''SELECT mat_name FROM mat
+                    order by random()
+                    limit 1;'''
+            cur.execute(sqlite_select_query)
+            records = cur.fetchall()
+            return records[0][0]
 
-        return records[0][0]
-    elif table == 'mat':
-        sqlite_select_query = '''SELECT mat_name FROM mat
-                order by random()
-                limit 1;'''
-        cur.execute(sqlite_select_query)
-        records = cur.fetchall()
-        return records[0][0]
-
-    VARIANTS.close()
-
-    '''table - название таблицы, из которой будут браться значение. title - введен пока только для таблицы цветовБ чтобы была возможность получать отдельно 
-    названия цветов, код цвета в таблице RGB и в общей классификации '''
+    '''table - название таблицы, из которой будут браться значение. title - введен пока только для таблицы цветовБ чтобы
+    была возможность получать отдельно названия цветов, код цвета в таблице RGB и в общей классификации '''
 
 
 if __name__ == "__main__":
     get_random_v2('design')
-
 
 # def update_var_color():
 #     for i in get_random('db'):
