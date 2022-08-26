@@ -32,7 +32,7 @@ def create_list_of_var():
     '''создание структуры базы данных  '''
 
 
-def save_user_data(file_direction='variants/users.txt', command='massage.from_user'):
+def save_user_data(file_direction='users.txt', command='massage.from_user'):
     with open(file_direction, 'a', encoding='utf-8') as userdata:
         t = command
         userdata.write(f'{str(t)}')
