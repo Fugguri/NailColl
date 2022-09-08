@@ -1,11 +1,9 @@
 import random
 from dotenv import load_dotenv
-import datetime
 import sqlite3
 from contextlib import contextmanager
 
 load_dotenv()
-now = datetime.datetime.now()
 
 
 @contextmanager
@@ -41,6 +39,8 @@ def create_list_of_var():
 
 
 def save_user_data(file_direction='users.txt', command='massage.from_user'):
+    import datetime
+    now = datetime.datetime.now()
     with open(file_direction, 'a', encoding='utf-8') as userdata:
         t = command
         userdata.write(f'{str(t)}')
