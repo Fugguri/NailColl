@@ -72,6 +72,12 @@ def get_random(command='bot'):
 
 
 def get_random_v2(table, title='name'):
+    '''
+    :param table: указание таблицы откуда берутся данные.
+    :param title: наименование значения, которое нужно получить - название цвета, код цвета или RGB код.
+    :return: наименоваине или два варианта кодировки цвета. Стандартное при code, и RGB при запросе rgb.
+    '''
+
     with db_conn('var.db') as cur:
 
         if table == 'color':
@@ -84,12 +90,15 @@ def get_random_v2(table, title='name'):
             cur.execute(sqlite_select_query)
             records = cur.fetchall()
             if title == 'name':
-                print()
                 return records[0][0]
-            if title == 'code':
+            elif title == 'code':
                 return records[0][1]
-            if title == 'rgb':
+            elif title == 'rgb':
                 return records[0][2]
+            else:
+                print('''Ошибка назначения введите один из 3х аргументов "name"- наименование цвета, "code" код цвета 
+                или "rgb" для RGB кодировки ''')
+
         elif table == 'design':
             sqlite_select_query = '''SELECT design_name FROM design
             order by random()
@@ -106,31 +115,6 @@ def get_random_v2(table, title='name'):
             records = cur.fetchall()
             return records[0][0]
 
-    '''table - название таблицы, из которой будут браться значение. title - введен пока только для таблицы цветовБ чтобы
-    была возможность получать отдельно названия цветов, код цвета в таблице RGB и в общей классификации '''
-
 
 if __name__ == "__main__":
     get_random_v2('design')
-
-# def update_var_color():
-#     for i in get_random('db'):
-#         name_color = ' '.join(i[:-4])
-#         color_code = ''.join(i[-4])
-#         color_rgb = ' '.join(i[-3:])
-#         data = (name_color, color_code, color_rgb)
-#         cur.execute("INSERT INTO color(color_name,color_code,color_rgb) VALUES( ?, ?, ?);", data)
-#         VARIANTS.commit()
-#     '''Перевод вариантов из текстового документа для упрощения работы бота '''
-# def update_var_design():
-#     with open('variants/design.txt', 'r') as design_variants:
-#         design_list = [(i.replace('\n', '')) for i in design_variants.readlines()]
-#         for i in design_list:
-#             now = (i,)
-#             cur.execute("INSERT INTO design(design_name) VALUES(?);", now)
-#             VARIANTS.commit()
-#     '''Перевод вариантов из текстового документа в базу данных для упрощения работы бота '''
-# def clear_bugs():
-#     cur.execute('delete from design   ')
-#     VARIANTS.commit()
-#     '''Временная функция для очистки проблемных/некорректных данных '''
