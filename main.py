@@ -1,7 +1,7 @@
 import os
 import telebot
 from telebot import types
-from func import save_user_data, get_random_color
+from func import save_user_data, get_random_color, get_random_design, get_random_mat
 
 SECRET_KEY = os.getenv('KEY')
 '''Импортирование секретного кода для бота. Код получен от BOT_FATHER. 
@@ -37,28 +37,13 @@ def get_random_answer(massage):
     img = Image.new('RGB', (250, 250), rgb_code)
     bot.send_photo(massage.chat.id,
                    photo=img,
-                   caption=
-                   f"<b>Цвет:</b> <u>{name}</u> "
+                   caption=f"<b>Цвет:</b> <u>{name}</u> "
                    f"\n<b>HEX код :</b> <u>{code}</u> "
                    f"\n<b>RGB код :</b> <u>{rgb}</u> \n"
-                   f"\n<b>Покрытие:</b> <u>{get_random_color('mat')}</u> "
-                   f"\n<b>Дизайн:</b> <u>{get_random_color('design')}</u>",
+                   f"\n<b>Покрытие:</b> <u>{get_random_mat()}</u> "
+                   f"\n<b>Дизайн:</b> <u>{get_random_design()}</u>",
                    parse_mode='html'
                    )
 
 
 bot.polling(none_stop=True)
-
-if __name__ == '__main__':
-    def run():
-        pass
-# markup = types.InlineKeyboardMarkup()  # add button in keyboard
-#
-# markup.add(types.InlineKeyboardButton('Посмотреть цвет в интернете',
-#                                       url=f"https://get-color.ru/#!{get_random_color('color', 'code')[1:]}"))
-
-# bot.send_message(massage.chat.id,
-#                  f" <b>Цвет:</b> <u>{get_random_color('color', 'name')}</u> "
-#                  f"\n<b>Покрытие:</b> <u>{get_random_color('mat')}</u> "
-#                  f"\n<b>Дизайн:</b> <u>{get_random_color('design')}</u>",
-#                  parse_mode='html', reply_markup=markup, )
