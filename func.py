@@ -71,11 +71,11 @@ def get_random(command='bot'):
     bot - для вызова из бота напрямую'''
 
 
-def get_random_v2(table, title='name'):
+def get_random_color(table, title='name'):
     '''
     :param table: указание таблицы откуда берутся данные.
     :param title: наименование значения, которое нужно получить - название цвета, код цвета или RGB код.
-    :return: наименоваине или два варианта кодировки цвета. Стандартное при code, и RGB при запросе rgb.
+    :return: наименование или один из двух вариантов кодировки цвета. Стандартное при code, и RGB при запросе rgb.
     '''
 
     with db_conn('var.db') as cur:
@@ -95,6 +95,8 @@ def get_random_v2(table, title='name'):
                 return records[0][1]
             elif title == 'rgb':
                 return records[0][2]
+            elif title == 'all':
+                return records[0]
             else:
                 print('''Ошибка назначения введите один из 3х аргументов "name"- наименование цвета, "code" код цвета 
                 или "rgb" для RGB кодировки ''')
@@ -117,4 +119,4 @@ def get_random_v2(table, title='name'):
 
 
 if __name__ == "__main__":
-    get_random_v2('design')
+    get_random_color('design')
