@@ -44,24 +44,6 @@ def get_random_answer(massage):
                    f"\n<b>Дизайн:</b> <u>{get_random_design()}</u>",
                    parse_mode='html'
                    )
-    img = Image.open("nail.jpg")
-    img = img.convert("RGB")
-
-    datas = img.getdata()
-
-    new_image_data = []
-    for item in datas:
-        # change all white (also shades of whites) pixels to yellow
-        if item[0] in list(range(1, 256)) and item[1] in range(1, 80) and item[2] in range(1,80):
-            new_image_data.append(rgb_code)
-        else:
-            new_image_data.append(item)
-
-    # update image data
-    img.putdata(new_image_data)
-    bot.send_photo(massage.chat.id,
-                   photo=img)
-    print('done')
 
 
 bot.polling(none_stop=True)
