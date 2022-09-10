@@ -63,5 +63,4 @@ def get_random_answer(massage):
                    photo=img)
     print('done')
 
-
 bot.polling(none_stop=True)
