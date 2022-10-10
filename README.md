@@ -1,1 +1,1 @@
-Project to random choose nail style and 
+nail design color project
