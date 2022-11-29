@@ -1,8 +1,5 @@
-from dotenv import load_dotenv
 import sqlite3
 from contextlib import contextmanager
-
-load_dotenv()
 
 
 @contextmanager
@@ -12,15 +9,6 @@ def db_conn(name_db):
     yield cur
     conn.commit()
     conn.close()
-
-
-def save_user_data(file_direction='users.txt', command='massage.from_user'):
-    import datetime
-    now = datetime.datetime.now()
-    with open(file_direction, 'a', encoding='utf-8') as userdata:
-        t = command
-        userdata.write(f'{str(t)}' + now.strftime("%d-%m-%Y %H:%M"))
-    '''Сохранение данных пользователей для дальнейшей работы с клиентами '''
 
 
 def get_random_color(table, title='name'):
